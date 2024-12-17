@@ -1,6 +1,6 @@
 import './App.css';
 import ComicsList from './component/ComicsList/ComicsList';
-import Counter from './component/Counter/Counter';
+// import Counter from './component/Counter/Counter';
 
 function App() {
 	return (

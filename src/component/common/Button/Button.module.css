@@ -1,0 +1,13 @@
+.deleteBtn {
+	cursor: pointer;
+	color: red;
+	background-color: transparent;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 5px;
+}
+.deleteBtn:hover {
+	box-shadow: 0 0 5px red;
+	text-shadow: 0 0 5px red;
+}

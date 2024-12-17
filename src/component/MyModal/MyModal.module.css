@@ -1,0 +1,29 @@
+.modal_wrapper {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(3px);
+	z-index: 5;
+}
+
+.modal_wrapper_open {
+	display: block;
+	height: 100vh;
+}
+
+.modal_wrapper_close {
+	display: none;
+	height: 0;
+}
+
+.modal_body {
+	background-color: #fff;
+	position: relative;
+	margin: 20vh auto;
+	max-width: 30vw;
+	padding: 20px;
+	border-radius: 10px;
+	max-height: 90vh;
+	overflow-y: auto;
+}
