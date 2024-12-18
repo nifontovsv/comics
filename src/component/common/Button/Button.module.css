@@ -11,3 +11,14 @@
 	box-shadow: 0 0 5px red;
 	text-shadow: 0 0 5px red;
 }
+
+.btnAddComics {
+	padding: 10px;
+	background-image: url('https://images.thedirect.com/media/article_full/marvrivals.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: white;
+	box-shadow: 0 0 15px grey;
+	text-shadow: 0 0 15px white;
+	font-weight: 700;
+}

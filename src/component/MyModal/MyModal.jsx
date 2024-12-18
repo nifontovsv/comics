@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './MyModal.module.css';
-import DeleteComicsBtn from '../common/Button/DeleteComicsBtn';
+import Button from '../common/Button/Button';
 
 function MyModal(props) {
 	return (
@@ -10,7 +10,8 @@ function MyModal(props) {
 			}`}>
 			<div className={styles.modal_body}>
 				{props.title && <h2>{props.title}</h2>}
-				<DeleteComicsBtn onClick={props.closeModal} />
+				<Button title='close' onClick={props.closeModal} style='deleteBtn' />
+				{props.children}
 			</div>
 		</div>
 	);

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ComicsElem from './ComicsElem/ComicsElem';
 import styles from './ComicsList.module.css';
 import MyModal from '../MyModal/MyModal';
+import Button from '../common/Button/Button';
+import FormComics from '../FormComics/FormComics';
 
 function ComicsList(props) {
 	const [comics, setComics] = useState([]);
@@ -21,6 +23,7 @@ function ComicsList(props) {
 					id: e.show.id,
 				}));
 				setComics(arr);
+				console.log(arr);
 			});
 	}, []);
 
@@ -29,17 +32,31 @@ function ComicsList(props) {
 		setComics([...comics]);
 	};
 
+	const addComic = (obj) => {
+		// 1 вариант:
+		// comics.push(obj);
+		// setComics([...comics]);
+		// 2 вариант:
+		// comics.splice(comics.length, 0, obj);
+		// setComics([...comics]);
+		// 3 вариант:
+		setComics([...comics, obj]);
+	};
+
 	return (
 		<>
-			<button onClick={() => setIsModal(true)} className={styles.btnAddComics}>
+			{/* <button onClick={() => setIsModal(true)} className={styles.btnAddComics}>
 				Add comics
-			</button>
+			</button> */}
+			<Button onClick={() => setIsModal(true)} title='Add comics' style='btnAddComics' />
 			<div className={styles.CatalogList}>
 				{comics.map((e, i) => {
 					return <ComicsElem item={e} key={e.id} deleteComics={() => deleteComicsItem(i)} />;
 				})}
 			</div>
-			<MyModal title='Add comics' isModal={isModal} closeModal={() => setIsModal(false)} />
+			<MyModal title='Add comics' isModal={isModal} closeModal={() => setIsModal(false)}>
+				<FormComics addComic={addComic} closeModal={() => setIsModal(false)} />
+			</MyModal>
 		</>
 	);
 }
