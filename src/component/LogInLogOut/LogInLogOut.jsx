@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import MyModal from '../MyModal/MyModal';
 import FormLogIn from '../FormLogIn/FormLogIn';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import styles from './LogInLogOut.module.css';
 
 function LogInLogOut() {
 	const [isLogin, setIsLogin] = useState(false);
 	const [isModal, setIsModal] = useState(false);
 
+	const navigate = useNavigate();
+
 	const logIn = () => {
 		setIsModal(true);
+		navigate('/admin');
 	};
 	const logOut = () => {
 		setIsLogin(false);
@@ -17,7 +20,7 @@ function LogInLogOut() {
 	return (
 		<>
 			{isLogin ? (
-				<Link onClick={logOut} className={styles.personalAccountExit} to='/login'>
+				<Link onClick={logOut} to='/' className={styles.personalAccountExit}>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						fill='#fff'
@@ -28,7 +31,7 @@ function LogInLogOut() {
 					</svg>
 				</Link>
 			) : (
-				<Link onClick={logIn} className={styles.personalAccount} to='/login'>
+				<Link onClick={logIn} className={styles.personalAccount}>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						fill='#fff'

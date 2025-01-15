@@ -14,7 +14,7 @@ function ComicsElem(props) {
 			<p>Premier:{premiered || '--'}</p>
 			<p>Rating:{rating || '--'}</p>
 			<p className={styles.desc}>{desc.replace(/<\/?[a-z]+>/gi, '')}</p>
-			<Button title='delete' onClick={props.deleteComics} style='deleteBtn' />
+			{<Button title='delete' onClick={props.deleteComics} style='deleteBtn' />}
 		</div>
 	);
 }

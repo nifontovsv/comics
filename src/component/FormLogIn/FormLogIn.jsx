@@ -1,22 +1,22 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import useInput from '../../Hooks/useInput';
 import useAuth from '../../Hooks/useAuth';
-// import { AuthContext } from '../../Contexts';
+import { Link, useNavigate } from 'react-router';
 
 function FormLogIn({ closeModal, setIsLoginTrue }) {
 	let login = useInput('');
 	let password = useInput('');
 
 	let { res, error, auth } = useAuth();
-	// let { setUser } = useContext(AuthContext);
+	const navigate = useNavigate();
 
 	const handlerLogin = (e) => {
 		e.preventDefault();
 		auth(login.value, password.value);
+		navigate('/admin');
 	};
 
 	useEffect(() => {
-		// setUser(res);
 		if (res) {
 			closeModal();
 			setIsLoginTrue();
@@ -40,7 +40,7 @@ function FormLogIn({ closeModal, setIsLoginTrue }) {
 				</label>
 			</div>
 			<br />
-			<button onClick={handlerLogin}>Log In</button>
+			<Link onClick={handlerLogin}>Log In</Link>
 			{res && <p>{JSON.stringify(res)}</p>}
 			{error && <p style={{ color: 'red' }}>{error}</p>}
 		</div>
