@@ -22,13 +22,32 @@ function ComicsListRedux(props) {
 		dispatch(loadComics());
 	}, []);
 
+	// Функция для получения или генерации уникальной цены
+	const getRandomPrice = (comicId, min, max) => {
+		const savedPrices = JSON.parse(localStorage.getItem('comicPrices')) || {}; // Получаем все сохранённые цены
+		if (savedPrices[comicId]) {
+			return savedPrices[comicId]; // Возвращаем существующую цену для конкретного комикса
+		}
+		const newPrice = Math.round(Math.random() * (max - min) + min); // Генерируем новую случайную цену
+		console.log(typeof newPrice);
+		savedPrices[comicId] = newPrice; // Сохраняем цену по уникальному ID
+		localStorage.setItem('comicPrices', JSON.stringify(savedPrices)); // Обновляем localStorage
+		return newPrice;
+	};
+
 	return (
 		<>
 			<Button onClick={() => setIsModal(true)} title='Add comics' style='btnAddComics' />
 			<div className={styles.CatalogList}>
 				{comics.map((e, i) => {
+					const price = getRandomPrice(e.id, 100, 1000);
 					return (
-						<ComicsElem item={e} key={e.id} deleteComics={() => dispatch(deleteComicsAction(i))} />
+						<ComicsElem
+							price={price}
+							item={{ ...e, price }} // Добавляем цену в объект item
+							key={e.id}
+							deleteComics={() => dispatch(deleteComicsAction(i))}
+						/>
 					);
 				})}
 			</div>
