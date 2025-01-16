@@ -9,6 +9,7 @@ import { thunk } from 'redux-thunk';
 import { BrowserRouter } from 'react-router';
 
 const store = createStore(reducers, applyMiddleware(thunk));
+window.store = store;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

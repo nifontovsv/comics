@@ -10,11 +10,9 @@ import {
 	deleteComicsAction,
 	loadComics,
 } from '../../store/actions/catalogComicsAction';
-import useAuth from '../../Hooks/useAuth';
 
 function ComicsListRedux(props) {
 	const [isModal, setIsModal] = useState(false);
-	let { res } = useAuth();
 
 	let comics = useSelector((state) => state.catalogComics);
 
@@ -39,7 +37,7 @@ function ComicsListRedux(props) {
 
 	return (
 		<>
-			{res && <Button onClick={() => setIsModal(true)} title='Add comics' style='btnAddComics' />}
+			<Button onClick={() => setIsModal(true)} title='Add comics' style='btnAddComics' />
 			<div className={styles.CatalogList}>
 				{comics.map((e, i) => {
 					const price = getRandomPrice(e.id, 100, 1000);
