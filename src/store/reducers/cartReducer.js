@@ -1,34 +1,89 @@
-export const ADD_TO_CART = 'ADD_TO_CART';
-export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-	items: [], // Массив для хранения добавленных товаров
-};
-
-export const cartReducer = (state = initialState, action) => {
-	switch (action.type) {
-		case ADD_TO_CART:
-			// Проверяем, есть ли товар уже в корзине
-			const existingItemIndex = state.items.findIndex((item) => item.id === action.payload.id);
-			if (existingItemIndex !== -1) {
-				// Если товар уже есть, увеличиваем количество
-				const updatedItems = [...state.items];
-				updatedItems[existingItemIndex].quantity += action.payload.quantity;
-				return { ...state, items: updatedItems };
+// Создаем slice для корзины
+const cartSlice = createSlice({
+	name: 'cart',
+	initialState: {
+		items: {}, // Словарь товаров, где ключ — id товара, значение — { name, price, quantity }
+		totalQuantity: 0, // Общее количество товаров
+		isSidebarOpen: false,
+		totalPrice: 0,
+	},
+	reducers: {
+		addItem(state, action) {
+			const { id, name, price } = action.payload;
+			// Проверяем, если товар уже есть в корзине
+			if (state.items[id]) {
+				// Увеличиваем количество товара в корзине
+				state.items[id].quantity += 1;
+				// Увеличиваем общее количество товаров
+				state.totalQuantity += 1;
+			} else {
+				// Если товара нет в корзине, добавляем его с количеством 1
+				state.items[id] = { name, price, quantity: 1 };
+				state.totalQuantity += 1;
 			}
-			// Если товара нет, добавляем его в корзину
-			return {
-				...state,
-				items: [...state.items, { ...action.payload, quantity: action.payload.quantity || 1 }],
-			};
+			// Обновляем общую стоимость
+			state.totalPrice += price;
+		},
+		removeItem(state, action) {
+			const itemTotalPrice = state.items[id].price * state.items[id].quantity;
+			const id = action.payload;
+			if (state.items[id]) {
+				state.totalQuantity -= state.items[id].quantity;
+				delete state.items[id];
+			}
+			// Вычитаем стоимость удаляемого товара из общей стоимости
+			state.totalPrice -= itemTotalPrice;
+		},
+		updateQuantity(state, action) {
+			const { id, quantity } = action.payload;
+			if (state.items[id]) {
+				state.totalQuantity += quantity - state.items[id].quantity;
+				state.items[id].quantity = quantity;
+			}
+		},
+		openSidebar(state) {
+			state.isSidebarOpen = !state.isSidebarOpen;
+		},
+		closeSidebar(state) {
+			state.isSidebarOpen = false;
+		},
+		decrementCount(state, action) {
+			const { id } = action.payload;
+			if (state.items[id] && state.items[id].quantity > 0) {
+				state.items[id].quantity--;
+				state.totalQuantity--;
+				state.sum += state.items[id].price;
 
-		case REMOVE_FROM_CART:
-			return {
-				...state,
-				items: state.items.filter((item) => item.id !== action.payload),
-			};
+				// Вычитаем стоимость за одну единицу товара
+				state.totalPrice -= state.items[id].price;
 
-		default:
-			return state;
-	}
-};
+				// Удаляем товар, если количество становится 0
+				if (state.items[id].quantity === 0) {
+					delete state.items[id];
+				}
+			}
+		},
+		incrementCount(state, action) {
+			const { id } = action.payload;
+			if (state.items[id]) {
+				state.items[id].quantity++;
+				state.totalQuantity++;
+				// Добавляем стоимость за одну единицу товара
+				state.totalPrice += state.items[id].price;
+			}
+		},
+	},
+});
+
+export const {
+	addItem,
+	removeItem,
+	updateQuantity,
+	openSidebar,
+	closeSidebar,
+	decrementCount,
+	incrementCount,
+} = cartSlice.actions;
+export default cartSlice.reducer;

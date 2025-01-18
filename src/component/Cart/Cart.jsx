@@ -1,30 +1,32 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart } from '../../store/actions/cartAction';
+import { removeItem } from '../../store/reducers/cartReducer';
+import Counter from '../common/Counter/Counter';
 
 const Cart = () => {
-	const cartItems = useSelector((state) => state.cart.items);
+	const items = useSelector((state) => state.cart.items);
+	const cart = useSelector((state) => state.cart);
+	console.log(items);
 	const dispatch = useDispatch();
 
-	const handleRemoveFromCart = (itemId) => {
-		dispatch(removeFromCart(itemId));
+	const handleRemove = (id) => {
+		dispatch(removeItem(id));
 	};
 
 	return (
 		<div>
-			<h2>Я зина корзина</h2>
-			{cartItems.length === 0 ? (
-				<p>Зина в отпуске, товаров нет</p>
-			) : (
-				<ul>
-					{cartItems.map((item) => (
-						<li key={item.id}>
-							{item.name} - {item.price} - {item.quantity} шт.
-							<button onClick={() => handleRemoveFromCart(item.id)}>Удалить</button>
-						</li>
-					))}
-				</ul>
-			)}
+			<h2>Корзина</h2>
+			{Object.entries(items).map(([id, item]) => (
+				<div key={id}>
+					<h3>{item.name}</h3>
+					<p>Цена: {item ? item.price * item.quantity : 0} ₽</p>
+
+					<Counter item={item} id={id} />
+
+					<button onClick={() => handleRemove(id)}>Удалить</button>
+				</div>
+			))}
+			<p>Общая стоимость: {cart.totalPrice} ₽</p>
 		</div>
 	);
 };
