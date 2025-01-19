@@ -6,55 +6,72 @@ import Button from '../common/Button/Button';
 import FormComics from '../FormComics/FormComics';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	addComicsAction,
-	deleteComicsAction,
+	addComics,
+	deleteComics,
 	loadComics,
-} from '../../store/actions/catalogComicsAction';
+	setCategoryFilter,
+	toggleModal,
+} from '../../store/reducers/comicsReducer';
 
 function ComicsListRedux(props) {
-	const [isModal, setIsModal] = useState(false);
+	const dispatch = useDispatch();
 
-	let comics = useSelector((state) => state.catalogComics);
+	const { category } = useSelector((state) => state.comics.filters);
+	const handleCategoryChange = (e) => {
+		dispatch(setCategoryFilter(e.target.value));
+	};
+	const { comics, status, error, filters, isModalOpen } = useSelector((state) => state.comics);
 
-	let dispatch = useDispatch();
+	const filteredComics = comics.filter((comic) => {
+		if (filters.category === 'all') return true;
+		if (filters.category === 'rating' && comic.rating) return comic.rating > 0;
+		return true;
+	});
+
+	const sortedComics = [...filteredComics].sort((a, b) => {
+		if (filters.category === 'rating') return (b.rating || 0) - (a.rating || 0);
+		if (filters.category === 'premiered') {
+			return new Date(a.premiered) - new Date(b.premiered);
+		}
+		if (filters.category === 'increase') return a.price - b.price;
+		if (filters.category === 'decrease') return b.price - a.price;
+		return 0;
+	});
 
 	useEffect(() => {
-		dispatch(loadComics());
-	}, []);
-
-	// Функция для получения или генерации уникальной цены
-	const getRandomPrice = (comicId, min, max) => {
-		const savedPrices = JSON.parse(localStorage.getItem('comicPrices')) || {}; // Получаем все сохранённые цены
-		if (savedPrices[comicId]) {
-			return savedPrices[comicId]; // Возвращаем существующую цену для конкретного комикса
+		if (status === 'idle') {
+			dispatch(loadComics());
 		}
-		const newPrice = Math.round(Math.random() * (max - min) + min); // Генерируем новую случайную цену
-		console.log(typeof newPrice);
-		savedPrices[comicId] = newPrice; // Сохраняем цену по уникальному ID
-		localStorage.setItem('comicPrices', JSON.stringify(savedPrices)); // Обновляем localStorage
-		return newPrice;
-	};
+	}, [dispatch, status]);
+	if (status === 'loading') return <p>Загрузка...</p>;
+	if (status === 'failed') return <p>Ошибка: {error}</p>;
 
 	return (
 		<>
-			<Button onClick={() => setIsModal(true)} title='Add comics' style='btnAddComics' />
+			<Button onClick={() => dispatch(toggleModal())} title='Add comics' style='btnAddComics' />
+			<select value={category} onChange={handleCategoryChange}>
+				<option value='all'>По умолчанию</option>
+				<option value='premiered'>По дате</option>
+				<option value='rating'>По рейтингу</option>
+				<option value='increase'>По возрастанию цены</option>
+				<option value='decrease'>По убыванию цены</option>
+			</select>
 			<div className={styles.CatalogList}>
-				{comics.map((e, i) => {
-					const price = getRandomPrice(e.id, 100, 1000);
+				{sortedComics.map((e, i) => {
 					return (
 						<ComicsElem
-							price={price}
-							item={{ ...e, price }} // Добавляем цену в объект item
+							// price={price}
+							item={{ ...e, category }} // Добавляем цену в объект item
 							key={e.id}
-							deleteComics={() => dispatch(deleteComicsAction(i))}
+							deleteComics={() => dispatch(deleteComics(i))}
 						/>
 					);
 				})}
 			</div>
-			<MyModal title='Add comics' isModal={isModal} closeModal={() => setIsModal(false)}>
+			<MyModal title='Add comics' isModal={isModalOpen} closeModal={() => dispatch(toggleModal())}>
 				<FormComics
-					addComic={(obj) => dispatch(addComicsAction(obj))}
-					closeModal={() => setIsModal(false)}
+					addComic={(obj) => dispatch(addComics(obj))}
+					closeModal={() => dispatch(toggleModal())}
 				/>
 			</MyModal>
 		</>

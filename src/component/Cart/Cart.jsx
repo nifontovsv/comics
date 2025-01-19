@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem } from '../../store/reducers/cartReducer';
+import { clearCart, removeItem } from '../../store/reducers/cartReducer';
 import Counter from '../common/Counter/Counter';
 
 const Cart = () => {
@@ -11,6 +11,10 @@ const Cart = () => {
 
 	const handleRemove = (id) => {
 		dispatch(removeItem(id));
+	};
+
+	const handleClearCart = () => {
+		dispatch(clearCart());
 	};
 
 	return (
@@ -27,6 +31,7 @@ const Cart = () => {
 				</div>
 			))}
 			<p>Общая стоимость: {cart.totalPrice} ₽</p>
+			<button onClick={handleClearCart}>Clear Cart</button>
 		</div>
 	);
 };

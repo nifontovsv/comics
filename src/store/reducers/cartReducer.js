@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const cartSlice = createSlice({
 	name: 'cart',
 	initialState: {
-		items: {}, // Словарь товаров, где ключ — id товара, значение — { name, price, quantity }
+		items: {}, // Список товаров, где ключ — id товара, значение — { name, price, quantity }
 		totalQuantity: 0, // Общее количество товаров
 		isSidebarOpen: false,
 		totalPrice: 0,
@@ -74,6 +74,13 @@ const cartSlice = createSlice({
 				state.totalPrice += state.items[id].price;
 			}
 		},
+		clearCart(state) {
+			if (state.items && typeof state.items === 'object') {
+				state.totalQuantity = 0;
+				state.items = {}; // Присваиваем пустой объект
+				state.totalPrice = 0; // Сбрасываем общую стоимость на ноль напрямую
+			}
+		},
 	},
 });
 
@@ -85,5 +92,6 @@ export const {
 	closeSidebar,
 	decrementCount,
 	incrementCount,
+	clearCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
